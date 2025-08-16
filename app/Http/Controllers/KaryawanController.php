@@ -40,7 +40,7 @@ class KaryawanController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required',
+            'email' => 'required|unique:users,email',
             'jabatan_id' => 'required',
             'cabang_id' => 'required',
             'shift_id' => 'required',
@@ -107,7 +107,7 @@ class KaryawanController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => "required|email|unique:users,email,{$karyawan->users->id}",
             'jabatan_id' => 'required',
             'cabang_id' => "required",
             'shift_id' => "required",
