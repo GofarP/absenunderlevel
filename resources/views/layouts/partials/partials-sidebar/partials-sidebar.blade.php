@@ -5,7 +5,7 @@
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">Underlevel</div>
+        <div class="sidebar-brand-text mx-3">Lava Cheese</div>
     </a>
 
     <!-- Divider -->
@@ -146,6 +146,8 @@
                 @elseif (Auth::user()->karyawan->first()?->jabatan->nama == 'Administrator')
                     <a class="collapse-item {{ request()->is('absensi/laporanabsensi*') ? 'active' : '' }}"
                         href="{{ route('absensi.laporanabsensi') }}">Laporan Absensi</a>
+                        <a class="collapse-item {{ request()->is('absensi/statusabsensi*') ? 'active' : '' }}"
+                            href="{{ route('statusabsensi.index') }}">Status Absensi</a>
                 @endif
             </div>
         </div>

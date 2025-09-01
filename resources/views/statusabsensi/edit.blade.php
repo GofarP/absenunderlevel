@@ -12,7 +12,7 @@
                         <div class="form-group col-12 mb-3">
                             <label for="name">Nama:</label>
                             <input type="text" class="form-control @error('nama') is-invalid @enderror" name="nama"
-                                placeholder="Masukkan nama" value="{{ old('nama') }}">
+                                placeholder="Masukkan nama" value="{{$statusabsensi->nama}}">
                             @error('name')
                                 <div class="invalid-feedback">
                                     {{ $message }}

@@ -21,7 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'foto'
+        'foto',
     ];
 
     /**
@@ -55,6 +55,7 @@ class User extends Authenticatable
 
     public function absensi(){
         return $this->hasMany(Absensi::class, 'users_id');
+
     }
 
 
