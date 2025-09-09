@@ -104,28 +104,9 @@
 
         <hr class="sidebar-divider">
 
-        <div class="sidebar-heading">
-            Gaji
-        </div>
-        <li class="nav-item {{ request()->is('gaji*') ? 'active' : '' }}">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGaji"
-                aria-expanded="true" aria-controls="collapseGaji">
-                <i class="fas fa-fw fa-user"></i>
-                <span>Gaji</span>
-            </a>
-            <div id="collapseGaji" class="collapse {{ request()->is('gaji*') ? 'show' : '' }}"
-                aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header"> Gaji:</h6>
-                    <a class="collapse-item {{ request()->is('gaji*') ? 'active' : '' }}"
-                        href="{{ route('gaji.laporangaji') }}">Laporan Gaji</a>
-                </div>
-            </div>
-        </li>
 
     @endif
 
-    <hr class="sidebar-divider">
 
     <div class="sidebar-heading">
         Absensi
@@ -140,10 +121,10 @@
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header"> Absensi:</h6>
-                @if (Auth::user()->karyawan->first()?->jabatan->nama != 'Administrator')
+                @if (Auth::user()->karyawan->first()?->jabatan->nama == 'Karyawan')
                     <a class="collapse-item {{ request()->is('absensi*') ? 'active' : '' }}"
                         href="{{ route('absensi.index') }}">Absensi</a>
-                @elseif (Auth::user()->karyawan->first()?->jabatan->nama == 'Administrator')
+                @elseif (Auth::user()->karyawan->first()?->jabatan->nama == 'Administrator' || Auth::user()->karyawan->first()?->jabatan->nama == 'Manager' )
                     <a class="collapse-item {{ request()->is('absensi/laporanabsensi*') ? 'active' : '' }}"
                         href="{{ route('absensi.laporanabsensi') }}">Laporan Absensi</a>
                         <a class="collapse-item {{ request()->is('absensi/statusabsensi*') ? 'active' : '' }}"

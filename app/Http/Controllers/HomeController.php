@@ -44,15 +44,9 @@ class HomeController extends Controller
         return view('dashboard.index', [
             'jumlah_masuk_bulan_ini' => $data_bulan_ini['masuk'],
             'jumlah_lembur_bulan_ini' => $data_bulan_ini['jumlah_lembur'],
-            'total_gaji_harian_bulan_ini' => $data_bulan_ini['gaji_harian'],
-            'total_lembur_bulan_ini' => $data_bulan_ini['lembur'],
-            'total_gaji_bulan_ini' => $total_gaji_bulan_ini,
 
             'jumlah_masuk_bulan_lalu' => $data_bulan_lalu['masuk'],
             'jumlah_lembur_bulan_lalu' => $data_bulan_lalu['jumlah_lembur'],
-            'total_gaji_harian_bulan_lalu' => $data_bulan_lalu['gaji_harian'],
-            'total_lembur_bulan_lalu' => $data_bulan_lalu['lembur'],
-            'total_gaji_bulan_lalu'=>$total_gaji_bulan_lalu
         ]);
     }
 
