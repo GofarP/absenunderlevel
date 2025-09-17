@@ -65,8 +65,8 @@ class ShiftController extends Controller
      */
     public function update(Request $request, Shift $shift)
     {
-        $request->validate([
-            'nama' => 'required|unique:shifts,nama,'.$shift->id,
+        $validated = $request->validate([
+            'nama' => 'required|unique:shifts,nama,' . $shift->id,
             'mulai_dari' => 'required',
             'sampai_dengan' => 'required'
         ], [
@@ -76,11 +76,12 @@ class ShiftController extends Controller
             'sampai_dengan.required' => 'Silahkan Masukkan Jam Selesai Shift'
         ]);
 
-
-        $shift->update();
+        // update dengan data yang sudah tervalidasi
+        $shift->update($validated);
 
         return redirect()->route('shift.index')->with('success', 'Sukses Mengubah Shift');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -89,6 +90,6 @@ class ShiftController extends Controller
     {
         $shift->delete();
 
-        return redirect()->route('shift.index')->with('success','Sukses Menghapus Shift');
+        return redirect()->route('shift.index')->with('success', 'Sukses Menghapus Shift');
     }
 }

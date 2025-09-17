@@ -62,16 +62,21 @@ class CabangController extends Controller
     public function update(Request $request, Cabang $cabang)
     {
         $request->validate([
-            'nama' => 'required|unique:cabangs,nama,'.$cabang->id
+            'nama' => 'required|unique:cabangs,nama,' . $cabang->id
         ], [
             'nama.required' => 'Silahkan Masukkan Nama Cabang',
             'nama.unique' => 'Nama Cabang Ini Sudah Ditambahkan Sebelumnya'
         ]);
 
-        $cabang->update();
+        // cara 1: langsung update dengan request
+        $cabang->update([
+            'nama' => $request->nama,
+        ]);
 
-        return redirect()->route('cabang.index')->with('success','Sukses Mengubah Cabang');
+
+        return redirect()->route('cabang.index')->with('success', 'Sukses Mengubah Cabang');
     }
+
 
     /**
      * Remove the specified resource from storage.
