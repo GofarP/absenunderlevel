@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Gaji;
 use App\Models\Absensi;
+use App\Models\JenisAbsensi;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\StatusAbsensi;
@@ -32,7 +33,8 @@ class AbsensiController extends Controller
     public function create()
     {
         $data_status_absensi = StatusAbsensi::get();
-        return view('absensi.create', compact('data_status_absensi'));
+        $data_jenis_absensi=JenisAbsensi::get();
+        return view('absensi.create', compact('data_status_absensi','data_jenis_absensi'));
     }
 
     /**
@@ -41,9 +43,11 @@ class AbsensiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'status_absensi_id' => 'required'
+            'status_absensi_id' => 'required',
+            'jenis_absensi_id'=>'required',
         ], [
-            'status_absensi_id.required' => 'Silahkan Pilih Status Masuk'
+            'status_absensi_id.required' => 'Silahkan Pilih Status Masuk',
+            'jenis_absensi_id.required'=>'Silahkan Pilih Jenis Absensi'
         ]);
         $user_name = Str::slug(Auth::user()->name); // ganti spasi jadi strip
         $today = now()->format('d-m-Y');
@@ -71,6 +75,7 @@ class AbsensiController extends Controller
         $absensi = Absensi::create([
             'users_id' => Auth::user()->id,
             'status_absensi_id' => $request->status_absensi_id,
+            'jenis_absensi_id'=>$request->jenis_absensi_id,
             'shift_id' => Auth::user()->karyawan->first()?->shift_id,
             'foto' => $file_name
         ]);
@@ -78,17 +83,17 @@ class AbsensiController extends Controller
         $jumlah_hari = \Carbon\Carbon::now()->daysInMonth();
         $gaji_harian = Auth::user()->karyawan->first()?->gaji_pokok / $jumlah_hari;
 
-        $lembur = 0;
+        // $lembur = 0;
 
-        if ($request->lembur == 1) {
-            $lembur = Auth::user()->karyawan->first()?->lembur;
-        }
-        Gaji::create([
-            'karyawan_id' => Auth::user()->id,
-            'absensi_id' => $absensi->id,
-            'gaji_harian' => $gaji_harian,
-            'lembur' => $lembur,
-        ]);
+        // if ($request->lembur == 1) {
+        //     $lembur = Auth::user()->karyawan->first()?->lembur;
+        // }
+        // Gaji::create([
+        //     'karyawan_id' => Auth::user()->id,
+        //     'absensi_id' => $absensi->id,
+        //     'gaji_harian' => $gaji_harian,
+        //     'lembur' => $lembur,
+        // ]);
 
         return redirect()->route('absensi.index')->with('success', 'Sukses Absensi Untuk Hari Ini');
     }

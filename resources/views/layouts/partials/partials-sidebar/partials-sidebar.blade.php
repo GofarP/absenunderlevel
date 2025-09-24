@@ -103,8 +103,6 @@
         </li>
 
         <hr class="sidebar-divider">
-
-
     @endif
 
 
@@ -121,14 +119,18 @@
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header"> Absensi:</h6>
-                @if (Auth::user()->karyawan->first()?->jabatan->nama == 'Karyawan' || Auth::user()->karyawan->first()?->jabatan->nama == 'Manager' )
+                @if (Auth::user()->karyawan->first()?->jabatan->nama == 'Karyawan' ||
+                        Auth::user()->karyawan->first()?->jabatan->nama == 'Manager')
                     <a class="collapse-item {{ request()->is('absensi*') ? 'active' : '' }}"
                         href="{{ route('absensi.index') }}">Absensi</a>
-                @elseif (Auth::user()->karyawan->first()?->jabatan->nama == 'Administrator' || Auth::user()->karyawan->first()?->jabatan->nama == 'Manager' )
+                @elseif (Auth::user()->karyawan->first()?->jabatan->nama == 'Administrator' ||
+                        Auth::user()->karyawan->first()?->jabatan->nama == 'Manager')
                     <a class="collapse-item {{ request()->is('absensi/laporanabsensi*') ? 'active' : '' }}"
                         href="{{ route('absensi.laporanabsensi') }}">Laporan Absensi</a>
-                        <a class="collapse-item {{ request()->is('absensi/statusabsensi*') ? 'active' : '' }}"
-                            href="{{ route('statusabsensi.index') }}">Status Absensi</a>
+                    <a class="collapse-item {{ request()->is('absensi/statusabsensi*') ? 'active' : '' }}"
+                        href="{{ route('statusabsensi.index') }}">Status Absensi</a>
+                    <a class="collapse-item {{ request()->is('absensi/jenisabsensi*') ? 'active' : '' }}"
+                        href="{{ route('jenisabsensi.index') }}">Jenis Absensi</a>
                 @endif
             </div>
         </div>

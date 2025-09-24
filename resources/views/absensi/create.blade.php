@@ -67,6 +67,22 @@
                             </div>
                         </div>
 
+                        <div class="form-group col-12 mb-3">
+                            <label for="jenis_absensi_id">Jenis Absensi :</label>
+                            <select name="jenis_absensi_id" id="jenis_absensi_id"
+                                class="form-control js-example-basic-single @error('jenis_absensi_id') is-invalid @enderror">
+                                <option value="">Pilih Jenis Absensi</option>
+                                @foreach ($data_jenis_absensi as $item)
+                                    <option value="{{ $item->id }}"
+                                        {{ old('jenis_absensi_id') == $item->id ? 'selected' : '' }}>
+                                        {{ $item->nama }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('jenis_absensi_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
 
                         <div class="form-group col-12 mb-3">
                             <label for="webcam">Ambil Foto Absensi:</label>

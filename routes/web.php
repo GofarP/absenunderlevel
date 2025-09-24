@@ -18,6 +18,7 @@ Route::resource('statusabsensi', \App\Http\Controllers\StatusAbsensiController::
 Route::resource('absensi', \App\Http\Controllers\AbsensiController::class);
 Route::resource('cabang', \App\Http\Controllers\CabangController::class);
 Route::resource('shift', \App\Http\Controllers\ShiftController::class);
+Route::resource('jenisabsensi',\App\Http\Controllers\JenisAbsensiController::class);
 
 
 Route::post('absensi/print', [\App\Http\Controllers\AbsensiController::class,'print'])->name('absensi.print');

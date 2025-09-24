@@ -10,7 +10,8 @@ class Absensi extends Model
         'users_id',
         'status_absensi_id',
         'shift_id',
-        'foto'
+        'foto',
+        'jenis_absensi_id',
      ];
 
      public function users(){
@@ -27,5 +28,9 @@ class Absensi extends Model
 
      public function gaji(){
         return $this->hasMany(Gaji::class,'absensi_id');
+     }
+
+     public function jenisabsensi(){
+        return $this->belongsTo(JenisAbsensi::class,'jenis_absensi_id');
      }
 }
