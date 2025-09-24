@@ -16,7 +16,7 @@ class AbsensiIndex extends Component
     public $search = "";
     public function render()
     {
-        $data_absensi = Absensi::with(['users', 'statusabsensi', 'shift'])
+        $data_absensi = Absensi::with(['users', 'statusabsensi', 'shift', 'jenisabsensi'])
             ->when(Auth::user()->id != 1, function ($query) {
                 $query->where('users_id', Auth::user()->id);
             })
@@ -28,6 +28,9 @@ class AbsensiIndex extends Component
                         $q->where('nama', 'like', '%' . $this->search . '%');
                     })
                     ->orWhereHas('shift', function ($q) {
+                        $q->where('nama', 'like', '%' . $this->search . '%');
+                    })
+                    ->orWhereHas('jenisabsensi', function ($q) {
                         $q->where('nama', 'like', '%' . $this->search . '%');
                     });
             })

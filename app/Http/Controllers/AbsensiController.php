@@ -159,7 +159,7 @@ class AbsensiController extends Controller
         $mulai_dari = Carbon::parse($request->mulai_dari)->startOfDay();
         $sampai_dengan = Carbon::parse($request->sampai_dengan)->endOfDay();
 
-        $data_laporan_absensi = Absensi::whereBetween('created_at', [$mulai_dari, $sampai_dengan])
+        $data_laporan_absensi = Absensi::with('jenisabsensi')->whereBetween('created_at', [$mulai_dari, $sampai_dengan])
             ->get();
 
         return view('absensi.print', compact('data_laporan_absensi', 'mulai_dari', 'sampai_dengan'));

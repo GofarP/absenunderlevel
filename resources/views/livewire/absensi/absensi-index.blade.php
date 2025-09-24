@@ -8,6 +8,7 @@
                 <th style="border: 1px solid; color: black">No</th>
                 <th style="border: 1px solid; color: black;">Nama</th>
                 <th style="border: 1px solid; color: black;">Status Absensi</th>
+                <th style="border: 1px solid; color: black;">Jenis Absensi</th>
                 <th style="border: 1px solid; color: black;">Shift</th>
                 <th style="border: 1px solid; color: black;">Waktu Absen</th>
                 <th style="border: 1px solid; color: black;">Foto</th>
@@ -17,9 +18,10 @@
                 @forelse ($data_absensi as $item)
                     <tr>
                         <td style="border: 1px solid; color: black;">{{ $loop->iteration }}</td>
-                        <td style="border: 1px solid; color: black;">{{ $item->users->name }}</td>
-                        <td style="border: 1px solid; color: black;">{{ $item->statusabsensi->nama }}</td>
-                        <td style="border: 1px solid; color: black;">{{ $item->shift->nama }}</td>
+                        <td style="border: 1px solid; color: black;">{{ $item->users->name ?? '-' }}</td>
+                        <td style="border: 1px solid; color: black;">{{ $item->statusabsensi->nama ?? '-' }}</td>
+                        <td style="border: 1px solid; color: black;">{{ $item->jenisabsensi->nama ?? '-' }}</td>
+                        <td style="border: 1px solid; color: black;">{{ $item->shift->nama ?? '-' }}</td>
                         <td style="border: 1px solid; color: black;">
                             {{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y H:i') }}</td>
                         <td style="border: 1px solid; color: black;">

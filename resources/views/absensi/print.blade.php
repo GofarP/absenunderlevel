@@ -31,6 +31,7 @@
                 <th>No</th>
                 <th>Nama</th>
                 <th>Status Absensi</th>
+                <th>Jenis Absensi</th>
                 <th>Lembur</th>
                 <th>Shift</th>
                 <th>Jam Masuk</th>
@@ -41,6 +42,7 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $item->users->name }}</td>
                         <td>{{ $item->statusabsensi->nama }}</td>
+                        <td>{{ $item->jenisabsensi->nama }}</td>
                         <td>{{ $item->gaji->first()?->lembur > 0 ? 'Ya' : 'Tidak' }}</td>
                         <td>{{ $item->users->karyawan->first()?->shift?->nama ?? '-' }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y H:i:s') }}</td>
