@@ -88,29 +88,6 @@
                             @enderror
                         </div>
 
-                        <div class="form-group col-12 mb-3">
-                            <label for="gaji_pokok">Gaji Pokok:</label>
-                            <input type="number" min="0"
-                                class="form-control @error('gaji_pokok') is-invalid @enderror" name="gaji_pokok"
-                                placeholder="Masukkan Gaji Pokok" value="{{ old('gaji_pokok') }}">
-                            @error('gaji_pokok')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-
-                        <div class="form-group col-12 mb-3">
-                            <label for="lembur">Lembur:</label>
-                            <input type="number" min="0" class="form-control @error('lembur') is-invalid @enderror"
-                                name="lembur" placeholder="Masukkan Lembur" value="{{ old('lembur') }}">
-                            @error('lembur')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-
 
                         <div class="form-group col-12 mb-3">
                             <label for="password">Password:</label>

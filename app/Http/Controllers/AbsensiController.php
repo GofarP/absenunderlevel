@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
-use App\Models\Gaji;
 use App\Models\Absensi;
 use App\Models\JenisAbsensi;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Models\StatusAbsensi;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class AbsensiController extends Controller
 {
@@ -33,8 +32,9 @@ class AbsensiController extends Controller
     public function create()
     {
         $data_status_absensi = StatusAbsensi::get();
-        $data_jenis_absensi=JenisAbsensi::get();
-        return view('absensi.create', compact('data_status_absensi','data_jenis_absensi'));
+        $data_jenis_absensi = JenisAbsensi::get();
+
+        return view('absensi.create', compact('data_status_absensi', 'data_jenis_absensi'));
     }
 
     /**
@@ -44,10 +44,10 @@ class AbsensiController extends Controller
     {
         $request->validate([
             'status_absensi_id' => 'required',
-            'jenis_absensi_id'=>'required',
+            'jenis_absensi_id' => 'required',
         ], [
             'status_absensi_id.required' => 'Silahkan Pilih Status Masuk',
-            'jenis_absensi_id.required'=>'Silahkan Pilih Jenis Absensi'
+            'jenis_absensi_id.required' => 'Silahkan Pilih Jenis Absensi',
         ]);
         $user_name = Str::slug(Auth::user()->name); // ganti spasi jadi strip
         $today = now()->format('d-m-Y');
@@ -55,8 +55,8 @@ class AbsensiController extends Controller
         $folder_path = public_path('foto_absensi/');
         File::ensureDirectoryExists($folder_path);
 
-        $image_parts = explode(";base64,", $request->foto);
-        $image_type_aux = explode("image/", $image_parts[0]);
+        $image_parts = explode(';base64,', $request->foto);
+        $image_type_aux = explode('image/', $image_parts[0]);
         $image_type = $image_type_aux[1]; // misal: png, jpeg
 
         $image_base64 = base64_decode($image_parts[1]);
@@ -66,34 +66,20 @@ class AbsensiController extends Controller
         file_put_contents($tmp_file, $image_base64);
 
         // Buat nama file akhir
-        $file_name = "{$user_name}-{$today}." . $image_type;
+        $file_name = "{$user_name}-{$today}.".$image_type;
 
         // Pindahkan file sementara ke folder tujuan
-        $destination_path = $folder_path . $file_name;
+        $destination_path = $folder_path.$file_name;
         File::move($tmp_file, $destination_path);
 
         $absensi = Absensi::create([
             'users_id' => Auth::user()->id,
             'status_absensi_id' => $request->status_absensi_id,
-            'jenis_absensi_id'=>$request->jenis_absensi_id,
+            'jenis_absensi_id' => $request->jenis_absensi_id,
             'shift_id' => Auth::user()->karyawan->first()?->shift_id,
-            'foto' => $file_name
+            'foto' => $file_name,
+            'lembur' => $request->lembur,
         ]);
-
-        $jumlah_hari = \Carbon\Carbon::now()->daysInMonth();
-        $gaji_harian = Auth::user()->karyawan->first()?->gaji_pokok / $jumlah_hari;
-
-        // $lembur = 0;
-
-        // if ($request->lembur == 1) {
-        //     $lembur = Auth::user()->karyawan->first()?->lembur;
-        // }
-        // Gaji::create([
-        //     'karyawan_id' => Auth::user()->id,
-        //     'absensi_id' => $absensi->id,
-        //     'gaji_harian' => $gaji_harian,
-        //     'lembur' => $lembur,
-        // ]);
 
         return redirect()->route('absensi.index')->with('success', 'Sukses Absensi Untuk Hari Ini');
     }
@@ -111,8 +97,7 @@ class AbsensiController extends Controller
      */
     public function edit(Absensi $absensi)
     {
-        $gaji = Gaji::where('absensi_id', $absensi->id)->first();
-        return view('absensi.edit', compact('absensi', 'gaji'));
+        return view('absensi.edit', compact('absensi'));
     }
 
     /**
@@ -121,19 +106,12 @@ class AbsensiController extends Controller
     public function update(Request $request, Absensi $absensi)
     {
         $request->validate([
-            'created_at' => 'required'
-        ], [
-            'created_at.required' => 'Silahkan Masukkan Jam Masuk'
+            'lembur' => 'required',
         ]);
 
-        $lembur = 0;
-        if ($request->lembur == 1) {
-            $lembur = Auth::user()->karyawan->lembur;
-        }
-
-        $absensi->update();
-
-        Gaji::where('absensi_id', $absensi->id)->update(['lembur' => $lembur]);
+        $absensi->update([
+            'lembur' => $request->lembur,
+        ]);
 
         return redirect()->route('absensi.index')->with('success', 'Sukses mengubah absensi');
     }
@@ -143,12 +121,12 @@ class AbsensiController extends Controller
      */
     public function destroy(Absensi $absensi)
     {
-        Gaji::where('absensi_id', $absensi->id)->delete();
         $absensi->delete();
+
         return redirect()->route('absensi.index')->with('success', 'Sukses Menghapus Data Absensi');
     }
 
-    public function  laporanAbsensi()
+    public function laporanAbsensi()
     {
         return view('absensi.laporanabsensi');
     }

@@ -7,118 +7,58 @@
     @endphp
 
     @if ($jabatan !== 'Administrator')
-        <!-- Earnings (Monthly) Card Example -->
-        <div class="card shadow mb-4 w-100">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Gaji Dan Lembur Bulan
-                    {{ \Carbon\Carbon::now()->translatedFormat('F Y') }}</h6>
-            </div>
-            <div class="card-body">
-                <div class="row">
-
-                    <!-- Total Masuk Bulan -->
-                    <div class="col-12 mb-4">
-                        <div class="card border-left-success shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                            Jumlah Masuk Bulan {{ \Carbon\Carbon::now()->translatedFormat('F') }}
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                            {{ $jumlah_masuk_bulan_ini }}
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-calendar-alt fa-2x text-gray-300"></i>
-                                    </div>
+        <div class="row">
+            
+            <div class="col-xl-6 col-md-6 mb-4"> 
+                <div class="card shadow h-100">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            Bulan Ini ({{ \Carbon\Carbon::now()->translatedFormat('F') }})
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Total Masuk
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {{ $jumlah_masuk_bulan_ini }}
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Lembur Bulan -->
-                    <div class="col-12 mb-4">
-                        <div class="card border-left-warning shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                            Jumlah Lembur {{ \Carbon\Carbon::now()->translatedFormat('F') }}
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                            {{ number_format($jumlah_lembur_bulan_ini) }}
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-business-time fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            <!-- End Card Body -->
-        </div> <!-- End Main Card -->
-
-        <div class="card shadow mb-4 w-100">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Gaji Dan Lembur Bulan
-                    {{ \Carbon\Carbon::now()->subMonth()->translatedFormat('F Y') }}</h6>
-            </div>
-            <div class="card-body">
-                <div class="row">
-
-                    <!-- Total Masuk Bulan -->
-                    <div class="col-12 mb-4">
-                        <div class="card border-left-success shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                            Jumlah Masuk Bulan
-                                            {{ \Carbon\Carbon::now()->subMonth()->translatedFormat('F') }}
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $jumlah_masuk_bulan_lalu }}
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-calendar-alt fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Total Lembur -->
-                    <div class="col-12 mb-4">
-                        <div class="card border-left-info shadow h-100 py-2">
-                            <div class="card-body">
-                                <div class="row no-gutters align-items-center">
-                                    <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                            Jumlah Lembur {{ \Carbon\Carbon::now()->subMonth()->translatedFormat('F') }}
-                                        </div>
-                                        <div class="row no-gutters align-items-center">
-                                            <div class="col-auto">
-                                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                                    {{ $jumlah_lembur_bulan_lalu }}</div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                    <div class="col-auto">
-                                        <i class="fas fa-clock fa-2x text-gray-300"></i>
-                                    </div>
-                                </div>
+                            <div class="col-auto">
+                                <i class="fas fa-calendar-check fa-2x text-gray-300"></i>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div> <!-- End Card Body -->
-        </div> <!-- End Main Card -->
+            </div>
+
+            <div class="col-xl-6 col-md-6 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                            Bulan Lalu ({{ \Carbon\Carbon::now()->subMonth()->translatedFormat('F') }})
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    Total Masuk
+                                </div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                    {{ $jumlah_masuk_bulan_lalu }}
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-history fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     @endif
-
 @endsection

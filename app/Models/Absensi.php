@@ -12,6 +12,7 @@ class Absensi extends Model
         'shift_id',
         'foto',
         'jenis_absensi_id',
+        'lembur'
      ];
 
      public function users(){
@@ -24,10 +25,6 @@ class Absensi extends Model
 
      public function shift(){
         return $this->belongsTo(Shift::class,'shift_id');
-     }
-
-     public function gaji(){
-        return $this->hasMany(Gaji::class,'absensi_id');
      }
 
      public function jenisabsensi(){

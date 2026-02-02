@@ -119,7 +119,7 @@
             aria-labelledby="headingTwo" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header"> Absensi:</h6>
-                @if (Auth::user()->karyawan->first()?->jabatan->nama == 'Karyawan' ||
+                @if (Auth::user()->karyawan->first()?->jabatan->nama != 'Administrator' ||
                         Auth::user()->karyawan->first()?->jabatan->nama == 'Manager')
                     <a class="collapse-item {{ request()->is('absensi*') ? 'active' : '' }}"
                         href="{{ route('absensi.index') }}">Absensi</a>

@@ -37,16 +37,11 @@ class HomeController extends Controller
         $data_bulan_ini = $this->getDataBulanan($bulan_ini, $user_id);
         $data_bulan_lalu = $this->getDataBulanan($bulan_lalu, $user_id);
 
-        $total_gaji_bulan_ini = $data_bulan_ini['gaji_harian'] + $data_bulan_ini['lembur'];
-
-        $total_gaji_bulan_lalu=$data_bulan_lalu['gaji_harian'] + $data_bulan_lalu['lembur'];
 
         return view('dashboard.index', [
             'jumlah_masuk_bulan_ini' => $data_bulan_ini['masuk'],
-            'jumlah_lembur_bulan_ini' => $data_bulan_ini['jumlah_lembur'],
 
             'jumlah_masuk_bulan_lalu' => $data_bulan_lalu['masuk'],
-            'jumlah_lembur_bulan_lalu' => $data_bulan_lalu['jumlah_lembur'],
         ]);
     }
 
@@ -58,18 +53,6 @@ class HomeController extends Controller
                 ->whereYear('created_at', $tanggal->year)
                 ->count(),
 
-            'jumlah_lembur' => Gaji::where('lembur', '>', 0)
-                ->whereMonth('created_at', $tanggal->month)
-                ->whereYear('created_at', $tanggal->year)
-                ->count(),
-
-            'gaji_harian' => Gaji::whereMonth('created_at', $tanggal->month)
-                ->whereYear('created_at', $tanggal->year)
-                ->sum('gaji_harian'),
-
-            'lembur' => Gaji::whereMonth('created_at', $tanggal->month)
-                ->whereYear('created_at', $tanggal->year)
-                ->sum('lembur'),
         ];
     }
 }

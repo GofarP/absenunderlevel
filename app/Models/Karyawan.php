@@ -14,7 +14,6 @@ class Karyawan extends Model
         'cabang_id',
         'shift_id',
         'gaji_pokok',
-        'lembur'
     ];
 
     public function users(){

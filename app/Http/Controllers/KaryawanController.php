@@ -44,8 +44,6 @@ class KaryawanController extends Controller
             'jabatan_id' => 'required',
             'cabang_id' => 'required',
             'shift_id' => 'required',
-            'gaji_pokok' => 'required',
-            'lembur' => 'required',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'password' => 'required|min:6|confirmed',
         ]);
@@ -72,8 +70,6 @@ class KaryawanController extends Controller
             'jabatan_id' => $request->jabatan_id,
             'cabang_id' => $request->cabang_id,
             'shift_id' => $request->shift_id,
-            'gaji_pokok' => $request->gaji_pokok,
-            'lembur' => $request->lembur
         ]);
 
         return redirect()->route('karyawan.index')->with('success', 'Sukses Menambah Karyawan');
@@ -111,8 +107,6 @@ class KaryawanController extends Controller
             'jabatan_id' => 'required',
             'cabang_id' => "required",
             'shift_id' => "required",
-            'gaji_pokok' => 'required|numeric',
-            'lembur' => 'required|numeric',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -141,8 +135,6 @@ class KaryawanController extends Controller
             'jabatan_id' => $request->jabatan_id,
             'cabang_id' => $request->cabang_id,
             'shift_id' => $request->shift_id,
-            'gaji_pokok' => $request->gaji_pokok,
-            'lembur' => $request->lembur,
         ]);
 
         return redirect()->route('karyawan.index')->with('success', 'Data karyawan berhasil diperbarui.');
