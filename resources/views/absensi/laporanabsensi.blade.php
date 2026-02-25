@@ -18,6 +18,18 @@
                                 <label for="sampai_dengan">Sampai Dengan:</label>
                                 <input type="date" class="form-control" name="sampai_dengan">
                             </div>
+                            <div class="form-group">
+                                <label for="jenis_absensi">Jenis Absensi</label>
+                                <select name="jenis_absensi_id"
+                                    class="form-control @error('jenis_absen_id') is-invalid @enderror js-example-basic-single" required
+                                >
+                                    <option value="">Pilih Jenis Absensi</option>
+                                    <option value="semua">Semua</option>
+                                    @foreach ($jenisAbsensis as $jenisAbsensi)
+                                        <option value="{{ $jenisAbsensi->id }}">{{ $jenisAbsensi->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
                             <button class="form-control btn btn-primary">Print</button>
                         </div>
                     </div>

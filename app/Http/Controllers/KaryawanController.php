@@ -39,6 +39,7 @@ class KaryawanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'nip'=>'required|unique:karyawans,nip',
             'name' => 'required',
             'email' => 'required|unique:users,email',
             'jabatan_id' => 'required',
@@ -66,6 +67,7 @@ class KaryawanController extends Controller
 
 
         Karyawan::create([
+            'nip'=>$request->nip,
             'users_id' => $user->id,
             'jabatan_id' => $request->jabatan_id,
             'cabang_id' => $request->cabang_id,
@@ -100,45 +102,51 @@ class KaryawanController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request, Karyawan $karyawan)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => "required|email|unique:users,email,{$karyawan->users->id}",
-            'jabatan_id' => 'required',
-            'cabang_id' => "required",
-            'shift_id' => "required",
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+{
+    $request->validate([
+        'nip'=>"required|unique:users,nip,{$karyawan->users->id}",
+        'name' => 'required',
+        'email' => "required|email|unique:users,email,{$karyawan->users->id}",
+        'jabatan_id' => 'required',
+        'cabang_id' => "required",
+        'shift_id' => "required",
+        'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+    ]);
 
-        $nama_file = $karyawan->users->foto ?? ''; // Default gunakan foto lama
+    $nama_file = $karyawan->users->foto; // Tetap gunakan foto lama sebagai default
 
-        if ($request->hasFile('foto')) {
-            // Hapus foto lama jika ada
-            if ($karyawan->users->foto != '') {
-                unlink(public_path('foto_karyawan/' . $karyawan->users->foto));
-            }
-
-            $foto = $request->file('foto');
-            $nama_file = time() . '_' . $foto->getClientOriginalName();
-            $foto->move(public_path('foto_karyawan'), $nama_file);
+    if ($request->hasFile('foto')) {
+        // 1. Hapus foto lama secara aman jika ada di database
+        if (!empty($karyawan->users->foto)) {
+            $oldPath = public_path('foto_karyawan/' . $karyawan->users->foto);
+            
+            // Menggunakan File::delete() agar skip otomatis jika file fisik tidak ada
+            File::delete($oldPath); 
         }
 
-        // Update tabel users (relasi dengan karyawan)
-        $karyawan->users()->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'foto' => $nama_file,
-        ]);
-
-        // Update data karyawan
-        $karyawan->update([
-            'jabatan_id' => $request->jabatan_id,
-            'cabang_id' => $request->cabang_id,
-            'shift_id' => $request->shift_id,
-        ]);
-
-        return redirect()->route('karyawan.index')->with('success', 'Data karyawan berhasil diperbarui.');
+        // 2. Simpan foto baru
+        $foto = $request->file('foto');
+        $nama_file = time() . '_' . $foto->getClientOriginalName();
+        $foto->move(public_path('foto_karyawan'), $nama_file);
     }
+
+    // Update tabel users (melalui relasi)
+    $karyawan->users()->update([
+        'name' => $request->name,
+        'email' => $request->email,
+        'foto' => $nama_file,
+    ]);
+
+    // Update data karyawan
+    $karyawan->update([
+        'karyawans'=>$request->nip,
+        'jabatan_id' => $request->jabatan_id,
+        'cabang_id' => $request->cabang_id,
+        'shift_id' => $request->shift_id,
+    ]);
+
+    return redirect()->route('karyawan.index')->with('success', 'Data karyawan berhasil diperbarui.');
+}
 
 
     /**

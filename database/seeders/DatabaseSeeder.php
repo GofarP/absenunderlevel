@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Karyawan::factory()->create([
+            'nip'=>'12345678',
             'users_id'=>1,
             'jabatan_id'=>1,
             'cabang_id'=>null,

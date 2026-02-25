@@ -41,8 +41,8 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $item->users->name }}</td>
-                        <td>{{ $item->statusabsensi->nama }}</td>
-                        <td>{{ $item->jenisabsensi->nama }}</td>
+                        <td>{{ $item->statusabsensi->nama ?? '-' }}</td>
+                        <td>{{ $item->jenisabsensi->nama ?? '-' }}</td>
                         <td>{{ $item->lembur ==1 ? 'Ya' : 'Tidak' }}</td>
                         <td>{{ $item->users->karyawan->first()?->shift?->nama ?? '-' }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y H:i:s') }}</td>

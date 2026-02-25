@@ -128,7 +128,10 @@ class AbsensiController extends Controller
 
     public function laporanAbsensi()
     {
-        return view('absensi.laporanabsensi');
+        $jenisAbsensis = JenisAbsensi::get();
+
+
+        return view('absensi.laporanabsensi', compact('jenisAbsensis'));
     }
 
     public function print(Request $request)
@@ -136,9 +139,15 @@ class AbsensiController extends Controller
 
         $mulai_dari = Carbon::parse($request->mulai_dari)->startOfDay();
         $sampai_dengan = Carbon::parse($request->sampai_dengan)->endOfDay();
+        $jenis_absensi_id = $request->jenis_absensi_id;
 
-        $data_laporan_absensi = Absensi::with('jenisabsensi')->whereBetween('created_at', [$mulai_dari, $sampai_dengan])
-            ->get();
+
+        $data_laporan_absensi = Absensi::with('jenisabsensi')
+            ->whereBetween('created_at', [$mulai_dari, $sampai_dengan])
+            ->when($jenis_absensi_id && $jenis_absensi_id !== 'semua', function ($query) use ($jenis_absensi_id) {
+            return $query->where('jenis_absensi_id', $jenis_absensi_id);
+         })
+        ->get();
 
         return view('absensi.print', compact('data_laporan_absensi', 'mulai_dari', 'sampai_dengan'));
     }

@@ -10,6 +10,16 @@
                     @method('PUT')
                     <div class="row">
                         <div class="form-group col-12 mb-3">
+                            <label for="name">NIP:</label>
+                            <input type="number" class="form-control @error('nip') is-invalid @enderror" name="nip"
+                                placeholder="Masukkan NIP Pegawai" value="{{ old('nip', $karyawan->nip) }}">
+                            @error('nip')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                        <div class="form-group col-12 mb-3">
                             <label for="name">Nama:</label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" name="name"
                                 value="{{ old('name', $karyawan->users->name) }}">
@@ -88,7 +98,7 @@
 
                       
                         <div class="form-group col-12 mb-3">
-                            <label for="foto">Foto:</label>
+                            <label for="foto">Foto(max 2mb):</label>
                             <input type="file" name="foto" id="foto"
                                 class="form-control @error('foto') is-invalid @enderror" onchange="previewImage(event)">
                             @error('foto')
