@@ -5,6 +5,19 @@
     <div class="container">
         <div class="card">
             <div class="card-body">
+                @if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong><i class="fas fa-exclamation-circle"></i> Periksa kembali inputan Anda:</strong>
+        <ul class="mb-0 mt-2">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+@endif
                 <form action="{{ route('absensi.store') }}" method="POST">
                     @csrf
                     <div class="row">
