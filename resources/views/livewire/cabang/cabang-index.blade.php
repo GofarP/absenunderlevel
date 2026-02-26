@@ -13,6 +13,8 @@
             <thead>
                 <th style="border: 1px solid; color: black">No</th>
                 <th style="border: 1px solid; color: black;">Nama</th>
+                <th style="border: 1px solid; color: black;">Lattitude</th>
+                <th style="border: 1px solid; color: black;">Longitude</th>
                 <th style="border: 1px solid; color: black;">Action</th>
             </thead>
             <tbody>
@@ -20,6 +22,8 @@
                     <tr>
                         <td style="border: 1px solid; color: black;">{{ $loop->iteration }}</td>
                         <td style="border: 1px solid; color: black;">{{ $item->nama }}</td>
+                        <td style="border: 1px solid; color:black">{{ $item->lattitude }}</td>
+                        <td style="border: 1px solid; color:black">{{ $item->longitude }}</td>
                         <td style="border: 1px solid; color: black;">
                             <div class="d-flex">
                                 <a href="{{ route('cabang.edit',$item->id) }}" class="btn btn-warning mr-2">Edit</a>

@@ -29,10 +29,14 @@ class CabangController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|unique:cabangs,nama,'
+            'nama' => 'required|unique:cabangs,nama,',
+            'lattitude' => 'required',
+            'longitude' => 'required',
         ], [
             'nama.required' => 'Silahkan Masukkan Nama Cabang',
-            'nama.unique' => 'Nama Cabang Ini Sudah Ditambahkan Sebelumnya'
+            'nama.unique' => 'Nama Cabang Ini Sudah Ditambahkan Sebelumnya',
+            'lattitude.required' => 'Silahkan masukkan garis lintang lokasi',
+            'longitude.required' => 'Silahkan masukkan garis bujur lokasi'
         ]);
 
         Cabang::create($request->except('_method', '_token'));
@@ -62,15 +66,22 @@ class CabangController extends Controller
     public function update(Request $request, Cabang $cabang)
     {
         $request->validate([
-            'nama' => 'required|unique:cabangs,nama,' . $cabang->id
+            'nama' => 'required|unique:cabangs,nama,' . $cabang->id,
+            'lattitude' => 'required',
+            'longitude' => 'required',
+
         ], [
             'nama.required' => 'Silahkan Masukkan Nama Cabang',
-            'nama.unique' => 'Nama Cabang Ini Sudah Ditambahkan Sebelumnya'
+            'nama.unique' => 'Nama Cabang Ini Sudah Ditambahkan Sebelumnya',
+            'lattitude.required' => 'Silahkan masukkan garis lintang lokasi',
+            'longitude.required' => 'Silahkan masukkan garis bujur lokasi'
+
         ]);
 
-        // cara 1: langsung update dengan request
         $cabang->update([
             'nama' => $request->nama,
+            'lattitude'=>$request->lattitude,
+            'longitude'=>$request->longitude
         ]);
 
 

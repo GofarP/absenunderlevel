@@ -50,7 +50,7 @@
                             <select name="status_absensi_id" id="status_absensi_id"
                                 class="form-control @error('status_absensi_id') is-invalid @enderror js-example-basic-single">
                                 <option value="">Status Absensi</option>
-                                @foreach ($data_status_absensi as $item)
+                                @foreach ($dataStatusAbsensi as $item)
                                     <option value="{{ $item->id }}">{{ $item->nama }}</option>
                                 @endforeach
                             </select>
@@ -72,7 +72,7 @@
                             <select name="jenis_absensi_id" id="jenis_absensi_id"
                                 class="form-control js-example-basic-single @error('jenis_absensi_id') is-invalid @enderror">
                                 <option value="">Pilih Jenis Absensi</option>
-                                @foreach ($data_jenis_absensi as $item)
+                                @foreach ($dataJenisAbsensi as $item)
                                     <option value="{{ $item->id }}"
                                         {{ old('jenis_absensi_id') == $item->id ? 'selected' : '' }}>
                                         {{ $item->nama }}
@@ -94,6 +94,19 @@
                             <div id="results">Foto akan muncul di sini...</div>
                         </div>
 
+                        <div class="form-group">
+                            <label for="map">Lokasi:</label>
+                            <div class="mt-2"
+                                style="width: 100%; overflow: hidden; border-radius: 8px; border: 1px solid #ddd;">
+                                <iframe
+                                    src="https://maps.google.com/maps?q={{ $cabang->lattitude }},{{ $cabang->longitude }}&hl=id&z=18&output=embed"
+                                    width="100%" height="350" style="border:0; display: block;" allowfullscreen=""
+                                    loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
+                            </div>
+                        </div>
+                        <input type="hidden" name="lat" id="lat" /><input type="hidden" name="lng" id="lng">
+
                     </div>
                     <button type="submit" class="btn btn-primary">Simpan</button>
                 </form>
@@ -106,6 +119,48 @@
 @push('scripts')
     {{-- WebcamJS CDN --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            getLocation();
+        });
+
+        function getLocation() {
+            if (navigator.geolocation) {
+                var options = {
+                    enableHighAccuracy: true,
+                    timeOut: 5000,
+                    maximumAge: 0
+                };
+
+                navigator.geolocation.getCurrentPosition(showPosition, showError, options);
+            } else {
+                alert("Geolocation tidak didukung oleh browser ini");
+            }
+        }
+
+        function showPosition(position) {
+            document.getElementById("lat").value = position.coords.latitude;
+            document.getElementById("lng").value = position.coords.longitude;
+        }
+
+        function showError(error) {
+            switch (error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("Anda menolak izin lokasi! Absensi tidak bisa dilakukan tanpa lokasi.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Informasi lokasi tidak tersedia.");
+                    break;
+                case error.TIMEOUT:
+                    alert("Waktu permintaan lokasi habis. Coba refresh halaman.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("Terjadi kesalahan yang tidak diketahui.");
+                    break;
+            }
+        }
+    </script>
 
     <script language="JavaScript">
         // Setting Webcam

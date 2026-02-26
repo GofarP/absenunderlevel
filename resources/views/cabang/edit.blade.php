@@ -19,9 +19,27 @@
                                 </div>
                             @enderror
                         </div>
+                        <div class="form-group col-12 mb-3">
+                            <label>lattitude</label>
+                            <input type="number" name="lattitude" id="lattitude"
+                                class="form-control @error('lattitude') is-invalid @enderror" placeholder="Contoh: 0.923180"
+                                step="any" value="{{ old('lattitude', $cabang->lattitude) }}" required>
+                            @error('lattitude')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group col-12 mb-3">
+                            <label>longitude</label>
+                            <input type="number" name="longitude" id="longitude"
+                                class="form-control @error('longitude') is-invalid @enderror" placeholder="Contoh: 0.923180"
+                                step="any" value="{{ old('longitude', $cabang->longitude) }}" required>
+                            @error('longitude')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
 
-                    <button type="submit" class="btn btn-warning">Update</button>
+                    <button type="submit" class="btn btn-warning w-100">Update</button>
                 </form>
             </div>
         </div>

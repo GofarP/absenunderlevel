@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Absensi;
+use App\Models\Cabang;
 use App\Models\JenisAbsensi;
 use App\Models\StatusAbsensi;
 use Carbon\Carbon;
@@ -31,10 +32,12 @@ class AbsensiController extends Controller
      */
     public function create()
     {
-        $data_status_absensi = StatusAbsensi::get();
-        $data_jenis_absensi = JenisAbsensi::get();
+        $dataStatusAbsensi = StatusAbsensi::get();
+        $dataJenisAbsensi = JenisAbsensi::get();
+        $cabangKaryawan = Auth::user()->karyawan->first()->cabang_id;
+        $cabang = Cabang::where('id', $cabangKaryawan)->first();
 
-        return view('absensi.create', compact('data_status_absensi', 'data_jenis_absensi'));
+        return view('absensi.create', compact('dataStatusAbsensi', 'dataJenisAbsensi', 'cabang'));
     }
 
     /**
@@ -45,43 +48,73 @@ class AbsensiController extends Controller
         $request->validate([
             'status_absensi_id' => 'required',
             'jenis_absensi_id' => 'required',
+            'lat' => 'required|numeric',
+            'lng' => 'required|numeric',
+            'foto' => 'required',
         ], [
             'status_absensi_id.required' => 'Silahkan Pilih Status Masuk',
             'jenis_absensi_id.required' => 'Silahkan Pilih Jenis Absensi',
+            'lat.required' => 'Garis lintang (Latitude) tidak terdeteksi.',
+            'lng.required' => 'Garis bujur (Longitude) tidak terdeteksi.',
         ]);
-        $user_name = Str::slug(Auth::user()->name); // ganti spasi jadi strip
-        $today = now()->format('d-m-Y');
+
+        $user = Auth::user();
+
+        $karyawan = $user->karyawan;
+
+        $cabang = $karyawan->cabang ?? null;
+
+        if (!$cabang) {
+            return back()->with('error', 'Data lokasi kantor belum diatur untuk akun Anda.');
+        }
+
+        $jarakMeter = $this->countGeofencingRange(
+            $request->lat,
+            $request->lng,
+            $cabang->lattitude,
+            $cabang->longitude
+        );
+
+        $maxRadius = 100;
+
+        if ($jarakMeter > $maxRadius) {
+            return back()->with('error', "Gagal Absen! Anda berada di luar radius kantor ($maxRadius m). Jarak terdeteksi: " . round($jarakMeter) . " meter.");
+        }
+
+        $user_name = Str::slug($user->name);
+        $today = now()->format('d-m-Y-H-i-s');
 
         $folder_path = public_path('foto_absensi/');
         File::ensureDirectoryExists($folder_path);
 
-        $image_parts = explode(';base64,', $request->foto);
-        $image_type_aux = explode('image/', $image_parts[0]);
-        $image_type = $image_type_aux[1]; // misal: png, jpeg
+        if (preg_match('/^data:image\/(\w+);base64,/', $request->foto, $type)) {
+            $image_type = strtolower($type[1]); // jpg, png, dll
 
-        $image_base64 = base64_decode($image_parts[1]);
+            if (!in_array($image_type, ['jpg', 'jpeg', 'png'])) {
+                return back()->with('error', 'Format gambar tidak didukung.');
+            }
 
-        // Buat file sementara
-        $tmp_file = tempnam(sys_get_temp_dir(), 'foto_absen_');
-        file_put_contents($tmp_file, $image_base64);
+            $image_parts = explode(',', $request->foto);
+            $image_base64 = base64_decode($image_parts[1]);
+            $file_name = "{$user_name}-{$today}.{$image_type}";
 
-        // Buat nama file akhir
-        $file_name = "{$user_name}-{$today}.".$image_type;
-
-        // Pindahkan file sementara ke folder tujuan
-        $destination_path = $folder_path.$file_name;
-        File::move($tmp_file, $destination_path);
+            file_put_contents($folder_path . $file_name, $image_base64);
+        } else {
+            return back()->with('error', 'Format file foto rusak atau tidak valid.');
+        }
 
         $absensi = Absensi::create([
-            'users_id' => Auth::user()->id,
+            'users_id' => $user->id,
             'status_absensi_id' => $request->status_absensi_id,
             'jenis_absensi_id' => $request->jenis_absensi_id,
-            'shift_id' => Auth::user()->karyawan->first()?->shift_id,
+            'shift_id' => $karyawan->shift_id ?? $karyawan->first()?->shift_id,
             'foto' => $file_name,
             'lembur' => $request->lembur,
+            'latitude' => $request->lat,
+            'longitude' => $request->lng,
         ]);
 
-        return redirect()->route('absensi.index')->with('success', 'Sukses Absensi Untuk Hari Ini');
+        return redirect()->route('absensi.index')->with('success', 'Sukses Absensi! Jarak: ' . round($jarakMeter) . 'm');
     }
 
     /**
@@ -145,10 +178,35 @@ class AbsensiController extends Controller
         $data_laporan_absensi = Absensi::with('jenisabsensi')
             ->whereBetween('created_at', [$mulai_dari, $sampai_dengan])
             ->when($jenis_absensi_id && $jenis_absensi_id !== 'semua', function ($query) use ($jenis_absensi_id) {
-            return $query->where('jenis_absensi_id', $jenis_absensi_id);
-         })
-        ->get();
+                return $query->where('jenis_absensi_id', $jenis_absensi_id);
+            })
+            ->get();
 
         return view('absensi.print', compact('data_laporan_absensi', 'mulai_dari', 'sampai_dengan'));
     }
+
+    private function countGeofencingRange($userLat, $userLng, $targetLat, $targetLng)
+    {
+        $earthRadiusKm = 6371;
+
+        $latitudeDifference = deg2rad($targetLat - $userLat);
+        $longitudeDifference = deg2rad($targetLng - $userLng);
+
+        $sinHalfLat = sin($latitudeDifference / 2);
+        $sinHalfLng = sin($longitudeDifference / 2);
+
+        $squareOfHalfChordLength = ($sinHalfLat * $sinHalfLat) +
+            cos(deg2rad($userLat)) * cos(deg2rad($targetLat)) *
+            ($sinHalfLng * $sinHalfLng);
+
+        $angularDistance = 2 * atan2(
+            sqrt($squareOfHalfChordLength),
+            sqrt(1 - $squareOfHalfChordLength)
+        );
+
+        $distanceInKm = $earthRadiusKm * $angularDistance;
+
+        return round($distanceInKm * 1000);
+    }
+
 }
