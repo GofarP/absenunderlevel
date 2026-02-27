@@ -73,14 +73,14 @@ class AbsensiController extends Controller
         $karyawan = Karyawan::where('users_id', $user->id)->first();
 
         // 3. Cek Ketersediaan Data Karyawan
-        if (! $karyawan) {
+        if (!$karyawan) {
             return back()->with('error', 'Akun Anda belum terdaftar sebagai data Karyawan.');
         }
 
         // 4. Ambil Cabang dari Karyawan tersebut
         $cabang = $karyawan->cabang;
 
-        if (! $cabang) {
+        if (!$cabang) {
             return back()->with('error', 'Data lokasi kantor (Cabang) belum diatur untuk Anda.');
         }
 
@@ -96,7 +96,7 @@ class AbsensiController extends Controller
         $maxRadius = 100; // Radius dalam meter
 
         if ($jarakMeter > $maxRadius) {
-            return back()->with('error', 'Gagal Absen! Jarak Anda: '.round($jarakMeter)."m (Maks: $maxRadius m).");
+            return back()->with('error', "Gagal Absen! Jarak Anda: " . round($jarakMeter) . " meter (Maks: $maxRadius m). Silahkan absen di area kantor.");
         }
 
         // 6. Proses Gambar
@@ -109,7 +109,7 @@ class AbsensiController extends Controller
         if (preg_match('/^data:image\/(\w+);base64,/', $request->foto, $type)) {
             $image_type = strtolower($type[1]);
 
-            if (! in_array($image_type, ['jpg', 'jpeg', 'png'])) {
+            if (!in_array($image_type, ['jpg', 'jpeg', 'png'])) {
                 return back()->with('error', 'Format gambar harus jpg, jpeg, atau png.');
             }
 
@@ -117,7 +117,7 @@ class AbsensiController extends Controller
             $image_base64 = base64_decode($image_parts[1]);
             $file_name = "{$user_name}-{$today}.{$image_type}";
 
-            file_put_contents($folder_path.$file_name, $image_base64);
+            file_put_contents($folder_path . $file_name, $image_base64);
         } else {
             return back()->with('error', 'File foto korup atau tidak valid.');
         }
@@ -134,7 +134,7 @@ class AbsensiController extends Controller
             'longitude' => $request->lng,
         ]);
 
-        return redirect()->route('absensi.index')->with('success', 'Sukses Absensi! Jarak: '.round($jarakMeter).'m');
+        return redirect()->route('absensi.index')->with('success', 'Sukses Absensi! Jarak: ' . round($jarakMeter) . 'm');
     }
 
     /**
