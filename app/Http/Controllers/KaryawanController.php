@@ -104,7 +104,7 @@ class KaryawanController extends Controller
     public function update(Request $request, Karyawan $karyawan)
 {
     $request->validate([
-        'nip'=>"required|unique:users,nip,{$karyawan->users->id}",
+        'nip'=>"required|unique:karyawans,nip,{$karyawan->users->id}",
         'name' => 'required',
         'email' => "required|email|unique:users,email,{$karyawan->users->id}",
         'jabatan_id' => 'required',
@@ -139,7 +139,7 @@ class KaryawanController extends Controller
 
     // Update data karyawan
     $karyawan->update([
-        'karyawans'=>$request->nip,
+        'nip'=>$request->nip,
         'jabatan_id' => $request->jabatan_id,
         'cabang_id' => $request->cabang_id,
         'shift_id' => $request->shift_id,
