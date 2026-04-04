@@ -12,7 +12,7 @@
             <div class="card-body">
                 <div class="table-responsive">
                     <div class="table table-hover table-stripped">
-                        @livewire('status-absensi.statusabsensi-index')
+                        @livewire('status-absensi.status-absensi-index')
                     </div>
                 </div>
             </div>
