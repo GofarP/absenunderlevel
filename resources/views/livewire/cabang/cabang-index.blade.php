@@ -37,7 +37,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="text-center" style="border: 1px solid; color: black;">Data Tidak
+                        <td colspan="5" class="text-center" style="border: 1px solid; color: black;">Data Tidak
                             Tersedia Atau Masih Kosong</td>
                     </tr>
                 @endforelse
