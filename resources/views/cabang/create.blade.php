@@ -21,7 +21,7 @@
                         <div class="form-group col-12 mb-3">
                             <label>lattitude</label>
                             <input type="number" class="form-control @error('lattitude') is-invalid @enderror"
-                                name="lattitude" placeholder="Masukkan Garis Lintang" value="{{ old('lattitude') }}" />
+                                name="lattitude" placeholder="Masukkan Garis Lintang" value="{{ old('lattitude') }}" step="any" required/>
                             @error('lattitude')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -30,7 +30,7 @@
                             <label>longitude</label>
                             <input type="number" name="longitude" id="longitude"
                                 class="form-control @error('longitude') is-invalid @enderror" placeholder="Masukan Garis bujur"
-                                step="any" value="{{ old('longitude') }}" required />
+                                step="any" value="{{ old('longitude') }}" step="any" required />
                             @error('longitude')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

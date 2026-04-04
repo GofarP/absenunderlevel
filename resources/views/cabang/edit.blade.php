@@ -23,7 +23,7 @@
                             <label>lattitude</label>
                             <input type="number" name="lattitude" id="lattitude"
                                 class="form-control @error('lattitude') is-invalid @enderror" placeholder="Contoh: 0.923180"
-                                step="any" value="{{ old('lattitude', $cabang->lattitude) }}" required>
+                                step="any" value="{{ old('lattitude', $cabang->lattitude) }}" step="any" required>
                             @error('lattitude')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -32,7 +32,7 @@
                             <label>longitude</label>
                             <input type="number" name="longitude" id="longitude"
                                 class="form-control @error('longitude') is-invalid @enderror" placeholder="Contoh: 0.923180"
-                                step="any" value="{{ old('longitude', $cabang->longitude) }}" required>
+                                step="any" value="{{ old('longitude', $cabang->longitude) }}" step="any" required>
                             @error('longitude')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
