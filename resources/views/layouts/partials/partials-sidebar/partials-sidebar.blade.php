@@ -62,24 +62,7 @@
         </li>
         <hr class="sidebar-divider">
 
-        <div class="sidebar-heading">
-            Cabang
-        </div>
-        <li class="nav-item {{ request()->is('cabang*') ? 'active' : '' }}">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCabang"
-                aria-expanded="true" aria-controls="collapseJabatan">
-                <i class="fas fa-fw fa-user"></i>
-                <span>Cabang</span>
-            </a>
-            <div id="collapseCabang" class="collapse {{ request()->is('cabang*') ? 'show' : '' }}"
-                aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Data Cabang:</h6>
-                    <a class="collapse-item {{ request()->is('cabang*') ? 'active' : '' }}"
-                        href="{{ route('cabang.index') }}">Data Cabang</a>
-                </div>
-            </div>
-        </li>
+    
 
         <hr class="sidebar-divider">
 

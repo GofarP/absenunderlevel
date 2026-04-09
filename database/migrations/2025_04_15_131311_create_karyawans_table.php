@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('users_id');
             $table->bigInteger('jabatan_id')->nullable();
-            $table->bigInteger('cabang_id')->nullable();
             $table->bigInteger('shift_id')->nullable();
             $table->bigInteger('gaji_pokok')->nullable();
             $table->bigInteger('lembur')->nullable();

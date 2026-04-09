@@ -19,7 +19,6 @@ class KaryawanFactory extends Factory
         return [
             'users_id'=>1,
             'jabatan_id'=>1,
-            'cabang_id'=>null,
             'gaji_pokok'=>0,
             'lembur'=>0,
         ];

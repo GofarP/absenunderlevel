@@ -18,16 +18,13 @@ class KaryawanIndex extends Component
 
     public function render()
     {
-        $data_karyawan = Karyawan::with('users', 'jabatan', 'cabang')
+        $data_karyawan = Karyawan::with('users', 'jabatan')
             ->where('users_id', '!=', 1)
             ->where(function ($query) {
                 $query->whereHas('users', function ($q) {
                     $q->where('name', 'like', '%' . $this->search . '%');
                 })
                     ->orWhereHas('jabatan', function ($q) {
-                        $q->where('nama', 'like', '%' . $this->search . '%');
-                    })
-                    ->orWhereHas('cabang', function ($q) {
                         $q->where('nama', 'like', '%' . $this->search . '%');
                     })
                     ->orWhere('gaji_pokok', 'like', '%' . $this->search . '%')

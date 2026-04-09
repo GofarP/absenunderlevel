@@ -48,14 +48,6 @@
                             @enderror
                         </div>
 
-                        <div class="form-group col-12 mb-3">
-                            <label for="cabang">Cabang:</label>
-                            <input type="text" class="form-control"
-                                value="{{ Auth::user()->karyawan->first()?->cabang?->nama }}" readonly>
-                            @error('cabang')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
 
                         <div class="form-group col-12 mb-3">
                             <label for="shift">Shift:</label>
@@ -116,17 +108,7 @@
                             <div id="results">Foto akan muncul di sini...</div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="map">Lokasi:</label>
-                            <div class="mt-2"
-                                style="width: 100%; overflow: hidden; border-radius: 8px; border: 1px solid #ddd;">
-                                <iframe
-                                    src="https://maps.google.com/maps?q={{ $cabang->lattitude }},{{ $cabang->longitude }}&hl=id&z=18&output=embed"
-                                    width="100%" height="350" style="border:0; display: block;" allowfullscreen=""
-                                    loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-                                </iframe>
-                            </div>
-                        </div>
+                       
                         <input type="hidden" name="lat" id="lat" /><input type="hidden" name="lng"
                             id="lng">
 

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Absensi;
-use App\Models\Cabang;
 use App\Models\JenisAbsensi;
 use App\Models\Karyawan;
 use App\Models\StatusAbsensi;
@@ -41,10 +40,8 @@ class AbsensiController extends Controller
     {
         $dataStatusAbsensi = StatusAbsensi::get();
         $dataJenisAbsensi = JenisAbsensi::get();
-        $cabangKaryawan = Auth::user()->karyawan->first()->cabang_id;
-        $cabang = Cabang::where('id', $cabangKaryawan)->first();
 
-        return view('absensi.create', compact('dataStatusAbsensi', 'dataJenisAbsensi', 'cabang'));
+        return view('absensi.create', compact('dataStatusAbsensi', 'dataJenisAbsensi'));
     }
 
     /**
@@ -77,20 +74,12 @@ class AbsensiController extends Controller
             return back()->with('error', 'Akun Anda belum terdaftar sebagai data Karyawan.');
         }
 
-        // 4. Ambil Cabang dari Karyawan tersebut
-        $cabang = $karyawan->cabang;
 
-        if (!$cabang) {
-            return back()->with('error', 'Data lokasi kantor (Cabang) belum diatur untuk Anda.');
-        }
-
-        // 5. Hitung Jarak (Geofencing)
-        // Pastikan ejaan 'lattitude' (double t) atau 'latitude' (satu t) sesuai database Anda!
         $jarakMeter = $this->countGeofencingRange(
             $request->lat,
             $request->lng,
-            $cabang->lattitude,
-            $cabang->longitude
+            0.910061,
+            104.476578
         );
 
         $maxRadius = 100; // Radius dalam meter

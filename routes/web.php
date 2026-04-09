@@ -16,7 +16,6 @@ Route::resource('karyawan', \App\Http\Controllers\KaryawanController::class);
 Route::resource('jabatan', \App\Http\Controllers\JabatanController::class);
 Route::resource('statusabsensi', \App\Http\Controllers\StatusAbsensiController::class);
 Route::resource('absensi', \App\Http\Controllers\AbsensiController::class);
-Route::resource('cabang', \App\Http\Controllers\CabangController::class);
 Route::resource('shift', \App\Http\Controllers\ShiftController::class);
 Route::resource('jenisabsensi',\App\Http\Controllers\JenisAbsensiController::class);
 

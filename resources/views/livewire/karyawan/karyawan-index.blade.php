@@ -15,7 +15,6 @@
                 <th style="border: 1px solid; color:black">Nip</th>
                 <th style="border: 1px solid; color: black;">Nama</th>
                 <th style="border: 1px solid; color: black;">Jabatan</th>
-                <th style="border: 1px solid; color: black;">Cabang</th>
                 <th style="border: 1px solid; color: black;">Shift</th>
                 <th style="border: 1px solid; color: black;">Foto</th>
                 <th style="border: 1px solid; color: black;">Action</th>
@@ -27,7 +26,6 @@
                         <td style="border: 1px solid; color:black;">{{ $item->nip?? '-' }}</td>
                         <td style="border: 1px solid; color: black;">{{ $item->users->name ?? '-' }}</td>
                         <td style="border: 1px solid; color: black;">{{ $item->jabatan->nama ?? '-' }}</td>
-                        <td style="border: 1px solid; color: black;">{{ $item->cabang->nama ?? '-' }}</td>
                         <td style="border: 1px solid; color: black;">{{ $item->shift->nama ?? '-' }}</td>
                         <td style="border: 1px solid; color: black;">
                             @if ($item->users->foto == '')

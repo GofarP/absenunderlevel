@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Cabang;
 use App\Models\Jabatan;
 use App\Models\Karyawan;
 use App\Models\Shift;
@@ -27,10 +26,9 @@ class KaryawanController extends Controller
     public function create()
     {
         $data_jabatan = Jabatan::get();
-        $data_cabang = Cabang::get();
         $data_shift = Shift::get();
 
-        return view('karyawan.create', compact('data_jabatan', 'data_cabang', 'data_shift'));
+        return view('karyawan.create', compact('data_jabatan', 'data_shift'));
     }
 
     /**
@@ -43,7 +41,6 @@ class KaryawanController extends Controller
             'name' => 'required',
             'email' => 'required|unique:users,email',
             'jabatan_id' => 'required',
-            'cabang_id' => 'required',
             'shift_id' => 'required',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'password' => 'required|min:6|confirmed',
@@ -70,7 +67,6 @@ class KaryawanController extends Controller
             'nip'=>$request->nip,
             'users_id' => $user->id,
             'jabatan_id' => $request->jabatan_id,
-            'cabang_id' => $request->cabang_id,
             'shift_id' => $request->shift_id,
         ]);
 
@@ -92,10 +88,9 @@ class KaryawanController extends Controller
     {
         $karyawan->load(['users', 'jabatan']);
         $data_jabatan = Jabatan::get();
-        $data_cabang = Cabang::get();
         $data_shift = Shift::get();
 
-        return view('karyawan.edit', compact('karyawan', 'data_cabang', 'data_jabatan','data_shift'));
+        return view('karyawan.edit', compact('karyawan', 'data_jabatan','data_shift'));
     }
 
     /**
@@ -108,7 +103,6 @@ class KaryawanController extends Controller
         'name' => 'required',
         'email' => "required|email|unique:users,email,{$karyawan->users->id}",
         'jabatan_id' => 'required',
-        'cabang_id' => "required",
         'shift_id' => "required",
         'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
     ]);
@@ -119,9 +113,9 @@ class KaryawanController extends Controller
         // 1. Hapus foto lama secara aman jika ada di database
         if (!empty($karyawan->users->foto)) {
             $oldPath = public_path('foto_karyawan/' . $karyawan->users->foto);
-            
+
             // Menggunakan File::delete() agar skip otomatis jika file fisik tidak ada
-            File::delete($oldPath); 
+            File::delete($oldPath);
         }
 
         // 2. Simpan foto baru
@@ -141,7 +135,6 @@ class KaryawanController extends Controller
     $karyawan->update([
         'nip'=>$request->nip,
         'jabatan_id' => $request->jabatan_id,
-        'cabang_id' => $request->cabang_id,
         'shift_id' => $request->shift_id,
     ]);
 

@@ -60,26 +60,6 @@
                             @enderror
                         </div>
 
-
-                        <div class="form-group col-12 mb-3">
-                            <label for="cabang_id">Cabang:</label>
-                            <select name="cabang_id" id="cabang_id"
-                                class="form-control @error('cabang_id') is-invalid @enderror js-example-basic-single ">
-                                <option value="">Silahkan Pilih Cabang</option>
-                                @foreach ($data_cabang as $item)
-                                    <option value="{{ $item->id }}"
-                                        {{ old('cabang_id') == $item->id ? 'selected' : '' }}>
-                                        {{ $item->nama }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('cabang_id')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-
                         <div class="form-group col-12 mb-3">
                             <label for="shift_id">Shift:</label>
                             <select name="shift_id" id="shift_id"

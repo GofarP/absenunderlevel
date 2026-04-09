@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Jabatan;
+use App\Models\Shift;
+use App\Models\StatusAbsensi;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Karyawan extends Model
 {
@@ -12,7 +16,6 @@ class Karyawan extends Model
         'nip',
         'users_id',
         'jabatan_id',
-        'cabang_id',
         'shift_id',
         'gaji_pokok',
     ];
@@ -25,23 +28,13 @@ class Karyawan extends Model
         return $this->belongsTo(Jabatan::class,'jabatan_id');
     }
 
-    public function cabang(){
-        return $this->belongsTo(Cabang::class,'cabang_id');
-    }
 
     public function shift(){
         return $this->belongsTo(Shift::class,'shift_id');
     }
 
-    public function gaji(){
-        return $this->hasMany(Gaji::class, 'karyawan_id');
-    }
-
     public function statusabsensi(){
         return $this->belongsTo(StatusAbsensi::class,'status_absensi_id');
     }
-
-
-
 
 }
