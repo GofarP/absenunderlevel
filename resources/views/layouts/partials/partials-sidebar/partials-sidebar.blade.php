@@ -1,9 +1,9 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
     <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ url('/') }}">
+        <div class="sidebar-brand-icon">
+            <img src="{{ asset('lavacheese.png') }}" alt="Lava Cheese Logo" style="width: 40px; height: auto;">
         </div>
         <div class="sidebar-brand-text mx-3">Lava Cheese</div>
     </a>
@@ -62,7 +62,7 @@
         </li>
         <hr class="sidebar-divider">
 
-    
+
 
         <hr class="sidebar-divider">
 
