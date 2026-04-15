@@ -58,13 +58,15 @@ class StatusAbsensiController extends Controller
      */
     public function update(Request $request, StatusAbsensi $statusabsensi)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'nama' => "required|unique:status_absensis,nama," . $statusabsensi->id
         ]);
 
-        $statusabsensi->update();
+        $statusabsensi->update($validatedData);
 
-        return redirect()->route('statusabsensi.index')->with('success', 'Sukses Mengubah Status Absensi');
+        return redirect()
+            ->route('statusabsensi.index')
+            ->with('success', 'Sukses Mengubah Status Absensi');
     }
 
     /**
