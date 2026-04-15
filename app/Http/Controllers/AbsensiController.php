@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class AbsensiController extends Controller
@@ -55,7 +56,7 @@ class AbsensiController extends Controller
             'jenis_absensi_id' => 'required',
             'lat' => 'required|numeric',
             'lng' => 'required|numeric',
-            'foto' => 'required',
+            'foto' => 'required', // Base64 string dari kamera
         ], [
             'status_absensi_id.required' => 'Silahkan Pilih Status Masuk',
             'jenis_absensi_id.required' => 'Silahkan Pilih Jenis Absensi',
@@ -65,67 +66,63 @@ class AbsensiController extends Controller
 
         $user = Auth::user();
 
-        // 2. PERBAIKAN UTAMA: Ambil Karyawan Menggunakan Query Manual (first)
-        // Ini solusi anti-error "Collection"
+        // 2. Ambil Data Karyawan
         $karyawan = Karyawan::where('users_id', $user->id)->first();
 
-        // 3. Cek Ketersediaan Data Karyawan
         if (!$karyawan) {
             return back()->with('error', 'Akun Anda belum terdaftar sebagai data Karyawan.');
         }
 
+        // 3. Cek Geofencing (Jarak)
+        // Titik koordinat kantor (Lava Cheese)
+        $kantorLat = 0.910061;
+        $kantorLng = 104.476578;
 
-        $jarakMeter = $this->countGeofencingRange(
-            $request->lat,
-            $request->lng,
-            0.910061,
-            104.476578
-        );
-
-        $maxRadius = 100; // Radius dalam meter
+        $jarakMeter = $this->countGeofencingRange($request->lat, $request->lng, $kantorLat, $kantorLng);
+        $maxRadius = 100;
 
         if ($jarakMeter > $maxRadius) {
-            return back()->with('error', "Gagal Absen! Jarak Anda: " . round($jarakMeter) . " meter (Maks: $maxRadius m). Silahkan absen di area kantor.");
+            return back()->with('error', "Gagal! Anda berada di luar radius (" . round($jarakMeter) . "m).");
         }
 
-        // 6. Proses Gambar
-        $user_name = Str::slug($user->name);
-        $today = now()->format('d-m-Y-H-i-s');
-        $folder_path = public_path('foto_absensi/');
-
-        File::ensureDirectoryExists($folder_path);
-
+        // 4. Proses Gambar Base64
+        $file_name = null;
         if (preg_match('/^data:image\/(\w+);base64,/', $request->foto, $type)) {
-            $image_type = strtolower($type[1]);
+            $image_type = strtolower($type[1]); // jpg, png, jpeg
 
             if (!in_array($image_type, ['jpg', 'jpeg', 'png'])) {
                 return back()->with('error', 'Format gambar harus jpg, jpeg, atau png.');
             }
 
-            $image_parts = explode(',', $request->foto);
-            $image_base64 = base64_decode($image_parts[1]);
-            $file_name = "{$user_name}-{$today}.{$image_type}";
+            $image_base64 = base64_decode(explode(',', $request->foto)[1]);
 
-            file_put_contents($folder_path . $file_name, $image_base64);
+            // Penamaan file: nama-user-tgl-jam.jpg
+            $user_name = Str::slug($user->name);
+            $timestamp = now()->format('d-m-Y-H-i-s');
+            $file_name = "{$user_name}-{$timestamp}.{$image_type}";
+
+            // SIMPAN KE STORAGE (Paling Aman)
+            // Akan tersimpan di: storage/app/public/foto_absensi/
+            Storage::disk('public')->put('foto_absensi/' . $file_name, $image_base64);
+
         } else {
-            return back()->with('error', 'File foto korup atau tidak valid.');
+            return back()->with('error', 'File foto tidak valid.');
         }
 
-        // 7. Simpan Absensi
-        $absensi = Absensi::create([
+        // 5. Simpan ke Database
+        Absensi::create([
             'users_id' => $user->id,
             'status_absensi_id' => $request->status_absensi_id,
             'jenis_absensi_id' => $request->jenis_absensi_id,
             'shift_id' => $karyawan->shift_id,
             'foto' => $file_name,
-            'lembur' => $request->lembur,
+            'lembur' => $request->lembur ?? 0,
             'latitude' => $request->lat,
             'longitude' => $request->lng,
         ]);
 
         return redirect()->route('absensi.index')->with('success', 'Sukses Absensi! Jarak: ' . round($jarakMeter) . 'm');
     }
-
     /**
      * Display the specified resource.
      */
