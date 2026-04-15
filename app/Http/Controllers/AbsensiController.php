@@ -56,7 +56,7 @@ class AbsensiController extends Controller
             'jenis_absensi_id' => 'required',
             'lat' => 'required|numeric',
             'lng' => 'required|numeric',
-            'foto' => 'required', // Base64 string dari kamera
+            'foto' => 'required', // String Base64 dari kamera
         ], [
             'status_absensi_id.required' => 'Silahkan Pilih Status Masuk',
             'jenis_absensi_id.required' => 'Silahkan Pilih Jenis Absensi',
@@ -74,7 +74,6 @@ class AbsensiController extends Controller
         }
 
         // 3. Cek Geofencing (Jarak)
-        // Titik koordinat kantor (Lava Cheese)
         $kantorLat = 0.910061;
         $kantorLng = 104.476578;
 
@@ -85,7 +84,7 @@ class AbsensiController extends Controller
             return back()->with('error', "Gagal! Anda berada di luar radius (" . round($jarakMeter) . "m).");
         }
 
-        // 4. Proses Gambar Base64
+        // 4. Proses Gambar Base64 (Sama mudahnya dengan move file)
         $file_name = null;
         if (preg_match('/^data:image\/(\w+);base64,/', $request->foto, $type)) {
             $image_type = strtolower($type[1]); // jpg, png, jpeg
@@ -96,14 +95,24 @@ class AbsensiController extends Controller
 
             $image_base64 = base64_decode(explode(',', $request->foto)[1]);
 
-            // Penamaan file: nama-user-tgl-jam.jpg
+            // Penamaan file mirip style foto karyawan
             $user_name = Str::slug($user->name);
             $timestamp = now()->format('d-m-Y-H-i-s');
             $file_name = "{$user_name}-{$timestamp}.{$image_type}";
 
-            // SIMPAN KE STORAGE (Paling Aman)
-            // Akan tersimpan di: storage/app/public/foto_absensi/
-            Storage::disk('public')->put('foto_absensi/' . $file_name, $image_base64);
+            // Tentukan path ke folder PUBLIC (Bukan Storage)
+            $folder_path = public_path('foto_absensi/');
+
+            // Buat folder jika belum ada (mirip mkdir)
+            if (!File::exists($folder_path)) {
+                File::makeDirectory($folder_path, 0755, true);
+            }
+
+            // Tulis file ke folder tersebut
+            file_put_contents($folder_path . $file_name, $image_base64);
+
+            // KRUSIAL: Ubah permission agar bisa dilihat browser (Fix Forbidden)
+            chmod($folder_path . $file_name, 0644);
 
         } else {
             return back()->with('error', 'File foto tidak valid.');
