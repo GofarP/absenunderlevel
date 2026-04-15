@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('karyawans', function (Blueprint $table) {
-            $table->dropColumn('cabang_id');
+            // Tambahkan pengecekan agar tidak error jika kolom sudah tidak ada
+            if (Schema::hasColumn('karyawans', 'cabang_id')) {
+                $table->dropColumn('cabang_id');
+            }
         });
     }
 
@@ -22,7 +25,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('karyawans', function (Blueprint $table) {
-            $table->unsignedBigInteger('cabang_id')->nullable();
+            // Tambahkan pengecekan agar tidak error jika kolom sudah ada saat rollback
+            if (!Schema::hasColumn('karyawans', 'cabang_id')) {
+                $table->unsignedBigInteger('cabang_id')->nullable();
+            }
         });
     }
 };
