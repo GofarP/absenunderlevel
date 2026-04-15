@@ -73,10 +73,9 @@ class AbsensiController extends Controller
             return back()->with('error', 'Akun Anda belum terdaftar sebagai data Karyawan.');
         }
 
-        // 3. Cek Geofencing (Jarak)
+        // 3. Cek Geofencing (Radius 100m)
         $kantorLat = 0.910061;
         $kantorLng = 104.476578;
-
         $jarakMeter = $this->countGeofencingRange($request->lat, $request->lng, $kantorLat, $kantorLng);
         $maxRadius = 100;
 
@@ -84,34 +83,30 @@ class AbsensiController extends Controller
             return back()->with('error', "Gagal! Anda berada di luar radius (" . round($jarakMeter) . "m).");
         }
 
-        // 4. Proses Gambar Base64 (Sama mudahnya dengan move file)
+        // 4. Proses Gambar Base64 (Simpan Langsung ke public_html)
         $file_name = null;
         if (preg_match('/^data:image\/(\w+);base64,/', $request->foto, $type)) {
             $image_type = strtolower($type[1]); // jpg, png, jpeg
-
-            if (!in_array($image_type, ['jpg', 'jpeg', 'png'])) {
-                return back()->with('error', 'Format gambar harus jpg, jpeg, atau png.');
-            }
-
             $image_base64 = base64_decode(explode(',', $request->foto)[1]);
 
-            // Penamaan file mirip style foto karyawan
+            // Nama file: nama-user-tgl-jam.jpg
             $user_name = Str::slug($user->name);
             $timestamp = now()->format('d-m-Y-H-i-s');
             $file_name = "{$user_name}-{$timestamp}.{$image_type}";
 
-            // Tentukan path ke folder PUBLIC (Bukan Storage)
-            $folder_path = public_path('foto_absensi/');
+            // PAKSA PATH KE public_html (Agar sejajar dengan foto_karyawan)
+            // base_path('../public_html/...') keluar dari folder laravel menuju folder publik cPanel
+            $folder_path = base_path('../public_html/foto_absensi/');
 
-            // Buat folder jika belum ada (mirip mkdir)
+            // Buat folder jika belum ada di public_html
             if (!File::exists($folder_path)) {
                 File::makeDirectory($folder_path, 0755, true);
             }
 
-            // Tulis file ke folder tersebut
-            file_put_contents($folder_path . $file_name, $image_base64);
+            // Tulis file secara fisik
+            File::put($folder_path . $file_name, $image_base64);
 
-            // KRUSIAL: Ubah permission agar bisa dilihat browser (Fix Forbidden)
+            // FIX FORBIDDEN: Berikan izin akses baca untuk publik (644)
             chmod($folder_path . $file_name, 0644);
 
         } else {
